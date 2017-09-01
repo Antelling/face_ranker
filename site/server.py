@@ -1,5 +1,9 @@
 from flask import Flask, request
 import json
+import sqlite3
+
+conn = sqlite3.connect('data.db')
+db = conn.cursor()
 
 app = Flask("ranker", static_url_path="")
 
@@ -10,17 +14,10 @@ def index():
 
 @app.route('/save', methods=["GET"])
 def get_results():
-    with open("data.json", "r+") as f:
-        data = f.read()
-        f.seek(0)
-
-        data = json.loads(data)
-        if not request.args["filename"] in data:
-            data[request.args["filename"]] = []
-        data[request.args["filename"]].append(int(request.args["rank"]))
-
-        f.write(json.dumps(data))
-        f.truncate()
+  
+    db.execute("INSERT INTO ranks VALUES ('" + request.args["filename"] + "', " + request.args["rank"] + ")")
+    conn.commit()
+      
     return "good"
 
 
