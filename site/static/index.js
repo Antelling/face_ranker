@@ -2,6 +2,7 @@ var list, folder, image, rank_input, current_image_src;
 
 $(function () {
     list = $("#csv").text().split(",");
+    console.log(list);
     folder = $("#folder").text();
 
     image = $("#face");
@@ -23,7 +24,13 @@ $(function () {
 });
 
 function make_random_face() {
-    current_image_src = list[Math.floor(Math.random() * list.length)];
+    var random_index = Math.floor(Math.random() * list.length);
+    console.log(random_index);
+
+    current_image_src = list[random_index];
+    list.splice(random_index, 1);
+    console.log(list.length);
+
     image_src = "./" + folder + "/" + current_image_src;
     image.attr("src", image_src)
 }

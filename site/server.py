@@ -22,6 +22,3 @@ def get_results():
         f.write(json.dumps(data))
         f.truncate()
     return "good"
-
-
-app.run(host="0.0.0.0", port=80)
