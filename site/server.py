@@ -24,4 +24,3 @@ def get_results():
     return "good"
 
 
-app.run(host="0.0.0.0", port=80)
