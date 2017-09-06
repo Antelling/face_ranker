@@ -1,4 +1,4 @@
 *.pyc
 __pycache__
 */__pycache__
-stats/most_attractive
+stats/ranked_filenames
