@@ -1,4 +1,7 @@
+from __future__ import division
+
 import json
+import random
 
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.svm import SVR
@@ -26,6 +29,30 @@ param_grid = {
 }
 
 
+def flatten_dimension(d):
+    n = len(d)
+    step = 10 / n
+    numbers = np.arange(0, 100, step)
+
+    # okay so we want to snap our d to numbers
+    # but we need to remember our original position
+    # and we need to fuzz the numbers to avoid bad correlations
+    structured_d = []
+    for i, value in enumerate(d):
+        structured_d.append({"index": i, "value": value + random.uniform(-.1, .1)})
+
+    structured_d.sort(key=lambda x: x["value"])
+
+    for i, value in enumerate(structured_d):
+        structured_d[i]["flattened_value"] = numbers[i]
+
+    structured_d.sort(key=lambda x: x["index"])
+
+    d = []
+    for value in structured_d:
+        d.append(value["flattened_value"])
+    return d
+
 def score(estimator, new_X, new_y):
     estimator.fit(new_X, new_y)
     predictions = estimator.predict(X)
@@ -47,11 +74,13 @@ for gender in "M", "F":
     for filename in embeddings:
         if filename in labels:
             scores = labels[filename]
-            l = [l for l in scores if 1 < l < 11]
+            l = [l for l in scores if 0 < l < 11]
             if len(l) > 0:
                 l = np.mean(l)
                 y.append(l)
                 X.append(embeddings[filename])
+
+    y = flatten_dimension(y)
 
     cv.fit(X, y)
 
